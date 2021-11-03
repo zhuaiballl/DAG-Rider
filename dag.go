@@ -33,6 +33,7 @@ type DAG struct {
 
 // Path checks if it is possible to go from v to u through strong or weak edges
 func (dag *DAG) Path(v,u *Vertex) bool {
+	// TODO: change DFS to BFS or add memory to it
 	if v.Round < u.Round {
 		return false
 	}
@@ -58,6 +59,7 @@ func (dag *DAG) Path(v,u *Vertex) bool {
 
 // StrongPath checks if it is possible to go from v to u through strong edges
 func (dag *DAG) StrongPath(v,u *Vertex) bool {
+	// TODO: change DFS to BFS or add memory to it
 	if v.Round < u.Round {
 		return false
 	}
@@ -69,7 +71,7 @@ func (dag *DAG) StrongPath(v,u *Vertex) bool {
 		}
 	}
 	for _,se := range v.StrongEdges {
-		if dag.Path(se.To, u) {
+		if dag.StrongPath(se.To, u) {
 			return true
 		}
 	}
