@@ -10,9 +10,8 @@ func (q *BlockQueue) Empty() bool {
 	return len(q.blocks) == 0
 }
 
-func (q *BlockQueue) Push(block *Block) error {
+func (q *BlockQueue) Push(block *Block) {
 	q.blocks = append(q.blocks, *block)
-	return nil
 }
 
 func (q *BlockQueue) Pop() (block *Block, err error) {

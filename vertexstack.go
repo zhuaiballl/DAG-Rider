@@ -10,9 +10,8 @@ func (st *VertexStack) Empty() bool {
 	return len(st.vertices) == 0
 }
 
-func (st *VertexStack) Push(v *Vertex) error {
+func (st *VertexStack) Push(v *Vertex) {
 	st.vertices = append(st.vertices, *v)
-	return nil
 }
 
 func (st *VertexStack) Pop() (v *Vertex, err error) {
