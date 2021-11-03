@@ -1,6 +1,6 @@
 package DAG_Rider
 
-import "go/types"
+import "github.com/filecoin-project/go-address"
 
 type Node struct {
 	dag DAG
@@ -151,4 +151,16 @@ func (nd *Node) WaveReady(w Wave) {
 	}
 	nd.decidedWave = w
 	nd.OrderVertices()
+}
+
+func (nd *Node) ABcast(b *Block, r Round) {
+	nd.blocksToPropose.Push(b)
+}
+
+func (nd *Node) RDeliver(v *Vertex, r Round, source address.Address) {
+	v.Source = source
+	v.Round = r
+	if len(v.StrongEdges) >= 2*F + 1 {
+		nd.buffer[v] = true
+	}
 }
