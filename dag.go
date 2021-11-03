@@ -1,15 +1,26 @@
 package DAG_Rider
 
-type Edge struct {
-	To *Vertex
-}
+type Round int
+type Wave int
 
 type DAG struct {
-	Vertices []Vertex
+	Round map[Round][]*Vertex
+}
+
+func (dag *DAG) Exist(v *Vertex) bool {
+	for _,ver := range dag.Round[v.Round] {
+		if v.Cmp(ver) == 0 {
+			return true
+		}
+	}
+	return false
 }
 
 // Path checks if it is possible to go from v to u through strong or weak edges
 func (dag *DAG) Path(v,u *Vertex) bool {
+	if !dag.Exist(v) || !dag.Exist(u) {
+		return false
+	}
 	// TODO: change DFS to BFS or add memory to it
 	if v.Round < u.Round {
 		return false
@@ -36,6 +47,9 @@ func (dag *DAG) Path(v,u *Vertex) bool {
 
 // StrongPath checks if it is possible to go from v to u through strong edges
 func (dag *DAG) StrongPath(v,u *Vertex) bool {
+	if !dag.Exist(v) || !dag.Exist(u) {
+		return false
+	}
 	// TODO: change DFS to BFS or add memory to it
 	if v.Round < u.Round {
 		return false

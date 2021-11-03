@@ -6,12 +6,13 @@ import (
 )
 
 type Vertex struct {
-	Round int
+	Round Round
 	Source address.Address
 	Block *Block
 	StrongEdges []Edge
 	WeakEdges []Edge
 }
+
 
 func (v *Vertex) Cmp(u *Vertex) int {
 	if v.Round > u.Round {
@@ -23,3 +24,11 @@ func (v *Vertex) Cmp(u *Vertex) int {
 	return strings.Compare(v.Source.String(), u.Source.String())
 }
 
+// AddEdge adds STRONG edges between vertex v and u
+func (v *Vertex) AddEdge(u *Vertex) {
+	v.StrongEdges = append(v.StrongEdges, Edge{u})
+}
+
+func (v *Vertex) AddWeakEdge(u *Vertex) {
+	v.WeakEdges = append(v.WeakEdges, Edge{u})
+}
