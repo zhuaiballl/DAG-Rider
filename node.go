@@ -68,7 +68,7 @@ func (nd *Node) VerifyEdges(v *Vertex) bool {
 	return true
 }
 
-func (nd *Node) Run() {
+func (nd *Node) DagConstruct() {
 	for {
 		for v, _ := range nd.buffer {
 			if v.Round <= nd.round {
