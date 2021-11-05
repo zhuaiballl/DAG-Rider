@@ -1,7 +1,5 @@
 package DAG_Rider
 
-import "github.com/filecoin-project/go-address"
-
 type Node struct {
 	dag DAG
 	blocksToPropose BlockQueue
@@ -13,13 +11,7 @@ type Node struct {
 }
 
 func (nd *Node) HasDelivered(v *Vertex) bool {
-	// TODO: determine by 'delivered' mark, not searching
-	for _,vv := range nd.deliveredVertices {
-		if vv.Cmp(v) == 0 {
-			return true
-		}
-	}
-	return false
+	return v.IsDelivered()
 }
 
 func (nd *Node) SetWeakEdges(v *Vertex, r Round) {
@@ -80,7 +72,7 @@ func (nd *Node) DagConstruct() {
 		}
 		if len(nd.dag.Round[nd.round]) >= 2*F+1 {
 			if nd.round % WaveSize == 0 {
-				go WaveReady(Wave(nd.round/WaveSize))
+				go nd.WaveReady(Wave(nd.round/WaveSize))
 			}
 			nd.round ++
 			v := nd.CreateNewVertex(nd.round)
@@ -98,6 +90,10 @@ func (nd *Node) GetWaveVertexLeader(w Wave) *Vertex {
 		}
 	}
 	return nil
+}
+
+func (nd *Node) Start() {
+	go nd.DagConstruct()
 }
 
 func (nd *Node) OrderVertices() {
@@ -122,7 +118,7 @@ func (nd *Node) OrderVertices() {
 		for _, vv := range verticesToDeliver {
 			ADeliver(vv.Block, vv.Round, vv.Source)
 			nd.deliveredVertices = append(nd.deliveredVertices, vv)
-			// TODO: mark vv as delivered
+			vv.MarkDelivered()
 		}
 	}
 }
@@ -151,16 +147,4 @@ func (nd *Node) WaveReady(w Wave) {
 	}
 	nd.decidedWave = w
 	nd.OrderVertices()
-}
-
-func (nd *Node) ABcast(b *Block, r Round) {
-	nd.blocksToPropose.Push(b)
-}
-
-func (nd *Node) RDeliver(v *Vertex, r Round, source address.Address) {
-	v.Source = source
-	v.Round = r
-	if len(v.StrongEdges) >= 2*F + 1 {
-		nd.buffer[v] = true
-	}
 }

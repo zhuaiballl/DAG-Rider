@@ -11,6 +11,7 @@ type Vertex struct {
 	Block *Block
 	StrongEdges []Edge
 	WeakEdges []Edge
+	delivered bool
 }
 
 
@@ -31,4 +32,12 @@ func (v *Vertex) AddEdge(u *Vertex) {
 
 func (v *Vertex) AddWeakEdge(u *Vertex) {
 	v.WeakEdges = append(v.WeakEdges, Edge{u})
+}
+
+func (v *Vertex) IsDelivered() bool {
+	return v.delivered
+}
+
+func (v *Vertex) MarkDelivered() {
+	v.delivered = true
 }
