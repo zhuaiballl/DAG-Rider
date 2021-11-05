@@ -21,7 +21,6 @@ func (dag *DAG) Path(v,u *Vertex) bool {
 	if !dag.Exist(v) || !dag.Exist(u) {
 		return false
 	}
-	// TODO: change DFS to BFS or add memory to it
 	if v.Round < u.Round {
 		return false
 	}
@@ -32,14 +31,33 @@ func (dag *DAG) Path(v,u *Vertex) bool {
 			return false
 		}
 	}
-	for _,se := range v.StrongEdges {
-		if dag.Path(se.To, u) {
-			return true
+	vis := make(map[*Vertex]bool)
+	st := VertexStack{}
+	st.Push(v)
+	vis[v]=true
+	for !st.Empty() {
+		cur,_ := st.Pop()
+		for _,se := range cur.StrongEdges {
+			to := se.To
+			if _,fd := vis[to]; !fd {
+				if u.Cmp(to) == 0 {
+					return true
+				}
+				if to.Round > u.Round {
+					st.Push(to)
+				}
+			}
 		}
-	}
-	for _,we := range v.WeakEdges {
-		if dag.Path(we.To, u) {
-			return true
+		for _,we := range cur.StrongEdges {
+			to := we.To
+			if _,fd := vis[to]; !fd {
+				if u.Cmp(to) == 0 {
+					return true
+				}
+				if to.Round > u.Round {
+					st.Push(to)
+				}
+			}
 		}
 	}
 	return false
@@ -50,7 +68,6 @@ func (dag *DAG) StrongPath(v,u *Vertex) bool {
 	if !dag.Exist(v) || !dag.Exist(u) {
 		return false
 	}
-	// TODO: change DFS to BFS or add memory to it
 	if v.Round < u.Round {
 		return false
 	}
@@ -59,6 +76,24 @@ func (dag *DAG) StrongPath(v,u *Vertex) bool {
 			return true
 		}else{
 			return false
+		}
+	}
+	vis := make(map[*Vertex]bool)
+	st := VertexStack{}
+	st.Push(v)
+	vis[v]=true
+	for !st.Empty() {
+		cur,_ := st.Pop()
+		for _,se := range cur.StrongEdges {
+			to := se.To
+			if _,fd := vis[to]; !fd {
+				if u.Cmp(to) == 0 {
+					return true
+				}
+				if to.Round > u.Round {
+					st.Push(to)
+				}
+			}
 		}
 	}
 	for _,se := range v.StrongEdges {
