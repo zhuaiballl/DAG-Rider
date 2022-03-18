@@ -130,8 +130,8 @@ func (nd *Node) WaveReady(w Wave) {
 	}
 	count := 0
 	for _, vv := range nd.dag.Round[Round(w*WaveSize)] {
-		if nd.dag.Path(vv, v){
-			count ++
+		if nd.dag.StrongPath(vv, v) {
+			count++
 		}
 	}
 	if count <= 2*F {
