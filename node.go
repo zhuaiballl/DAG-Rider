@@ -37,7 +37,7 @@ func (nd *Node) CreateNewVertex(r Round) (v *Vertex) {
 	// set round?
 	//v.Round = r
 	// add edges
-	for _,u := range nd.dag.Round[r] {
+	for _, u := range nd.dag.Round[r-1] {
 		v.AddEdge(u)
 	}
 	nd.SetWeakEdges(v, r)
